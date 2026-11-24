@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modelo OSI: Fútbol de Robots</title>
+  <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+
+<header class="main-header">
+  <h1>Modelo OSI: Fútbol de Robots (2 vs 2)</h1>
+</header>
+
+<main class="container">
+  
+  <!-- SECCIÓN 1: Presentación -->
+  <section class="section-card" id="presentacion">
+    <h2>1. Presentación del Proyecto</h2>
+    <div class="embed-container">
+  <div class="slider">
+    <img id="slide-img" src="assets/slides/1.png" alt="Diapositiva">
+    <div class="slider-bar">
+      <button id="slide-prev">&#9664; Anterior</button>
+      <span id="slide-count">1 / 27</span>
+      <button id="slide-next">Siguiente &#9654;</button>
+    </div>
+  </div>
+</div>
+  </section>
+
+  <!-- SECCIÓN 2: Laboratorio Interactivo -->
+  <section class="section-card" id="laboratorio">
+    <h2>2. Laboratorio de Redes</h2>
+    <p class="desc">Modifica las direcciones IPv4 de cada dispositivo dentro del rango de su subred 
+      (Equipo A: .1 a .6, Equipo B: .9 a .14, Marcador: .17 a .18), 
+      ajusta el ruido del medio físico y observa el recorrido completo en la pila OSI.</p>
+    
+    <div class="game-layout">
+      
+      <!-- Columna Izquierda: Dispositivos y Ruido -->
+      <div class="panel">
+        <div class="panel-header">Dispositivos de Red</div>
+        <div class="panel-body">
+          <div class="subnet-banner">
+            <span><strong>Equipo A:</strong> 192.168.1.0/29 (.1 a .6)</span>
+            <span><strong>Equipo B:</strong> 192.168.1.8/29 (.9 a .14)</span>
+            <span><strong>Marcador:</strong> 192.168.1.16/30 (.17 a .18)</span>
+          </div>
+
+          <div class="device-table-head">
+            <span>Dispositivo</span>
+            <span>Dirección IPv4</span>
+          </div>
+
+          <div id="device-list" class="device-list">
+            <!-- Generado por JS -->
+          </div>
+
+          <div class="noise-box">
+            <h3>Medio Físico (Canal RF)</h3>
+            <label>Ruido / Saturación: <span id="noise-val">0%</span></label>
+            <input type="range" id="noise-slider" min="0" max="100" value="0">
+            <p class="hint">
+              Si el porcentaje de ruido es mayor al azar generado, la trama sufre alteración de bits. Falla el <strong>Checksum (L2)</strong> y el paquete se descarta.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Columna Central: Controles por Jugador y Cancha -->
+      <div class="panel">
+        <div class="panel-header">Control Remoto (Comandos de Red)</div>
+        <div class="panel-body">
+          
+          <div class="teams-controls">
+            <!-- Equipo A (Naranja) -->
+            <div class="team-control-group">
+              <h4>Equipo A — Naranja</h4>
+              <div class="player-row">
+                <span><strong>A1</strong> (Control A1 &rarr; Robot A1)</span>
+                <div class="btn-group">
+                  <button class="btn-naranja" data-action="move" data-team="naranja" data-player="A1">Mover</button>
+                  <button class="btn-naranja" data-action="kick" data-team="naranja" data-player="A1">Patear</button>
+                  <button class="btn-naranja-dark" data-action="goal" data-team="naranja" data-player="A1">Gol (TCP)</button>
+                </div>
+              </div>
+              <div class="player-row">
+                <span><strong>A2</strong> (Control A2 &rarr; Robot A2)</span>
+                <div class="btn-group">
+                  <button class="btn-naranja" data-action="move" data-team="naranja" data-player="A2">Mover</button>
+                  <button class="btn-naranja" data-action="kick" data-team="naranja" data-player="A2">Patear</button>
+                  <button class="btn-naranja-dark" data-action="goal" data-team="naranja" data-player="A2">Gol (TCP)</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Marcador -->
+            <div class="team-control-group">
+              <h4>Marcador</h4>
+              <div class="marcador-line">
+                <span class="m-naranja">Naranja</span>
+                <b id="stat-score">0 - 0</b>
+                <span class="m-verde">Verde</span>
+              </div>
+            </div>
+
+            <!-- Equipo B (Verde) -->
+            <div class="team-control-group">
+              <h4>Equipo B — Verde</h4>
+              <div class="player-row">
+                <span><strong>B1</strong> (Control B1 &rarr; Robot B1)</span>
+                <div class="btn-group">
+                  <button class="btn-verde" data-action="move" data-team="verde" data-player="B1">Mover</button>
+                  <button class="btn-verde" data-action="kick" data-team="verde" data-player="B1">Patear</button>
+                  <button class="btn-verde-dark" data-action="goal" data-team="verde" data-player="B1">Gol (TCP)</button>
+                </div>
+              </div>
+              <div class="player-row">
+                <span><strong>B2</strong> (Control B2 &rarr; Robot B2)</span>
+                <div class="btn-group">
+                  <button class="btn-verde" data-action="move" data-team="verde" data-player="B2">Mover</button>
+                  <button class="btn-verde" data-action="kick" data-team="verde" data-player="B2">Patear</button>
+                  <button class="btn-verde-dark" data-action="goal" data-team="verde" data-player="B2">Gol (TCP)</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button id="auto-btn" class="btn-full">Simular Partido Completo</button>
+          <button id="reject-btn" class="btn-full">Intento: Control A1 → Robot A2</button>
+
+          <div class="cancha-box">
+            <img src="assets/img/cancha.png" alt="Cancha de Fútbol" class="cancha-img">
+          </div>
+        </div>
+      </div>
+
+      <!-- Columna Derecha: Estado de Red, Doble Pila OSI Animada y Diario -->
+      <div class="panel">
+        <div class="panel-header">Estado de Red y Diario</div>
+        <div class="panel-body">
+          <div class="osi-box">
+            <h3>Estado OSI del Último Paquete (Animado)</h3>
+            <div class="osi-dual-grid">
+              <div>
+                <div class="osi-col-title">1. Emisor (Salida)</div>
+                <ul id="osi-out" class="osi-list">
+                  <li id="OUT-L7">7. Aplicación</li>
+                  <li id="OUT-L6">6. Presentación</li>
+                  <li id="OUT-L5">5. Sesión</li>
+                  <li id="OUT-L4">4. Transporte</li>
+                  <li id="OUT-L3">3. Red</li>
+                  <li id="OUT-L2">2. Enlace</li>
+                  <li id="OUT-L1">1. Física</li>
+                </ul>
+              </div>
+              <div>
+                <div class="osi-col-title">2. Receptor (Entrada)</div>
+                <ul id="osi-in" class="osi-list">
+                  <li id="IN-L7">7. Aplicación</li>
+                  <li id="IN-L6">6. Presentación</li>
+                  <li id="IN-L5">5. Sesión</li>
+                  <li id="IN-L4">4. Transporte</li>
+                  <li id="IN-L3">3. Red</li>
+                  <li id="IN-L2">2. Enlace</li>
+                  <li id="IN-L1">1. Física</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="log-box">
+            <h3>Diario de Red</h3>
+            <div class="console-bar">
+              <select id="cmd-src"></select>
+              <input type="text" id="cmd-input" placeholder="ping 192.168.1.4 | tracert 192.168.1.18">
+              <button id="cmd-run">Ejecutar</button>
+            </div>
+            <button id="ping-quick" class="btn-quick">Ping Control A1 → Robot B1</button>
+            <div id="log"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nueva zona inferior para Cálculos, Checksum y VLSM -->
+    <div class="bottom-calc-layout">
+      
+      <div class="calc-wrapper">
+        <div class="calc-box">
+          <h3>Cálculos</h3>
+          <div class="calc-block">
+            <b>SubRedes</b>
+            <div class="formula">Hosts útiles = 2<sup>n</sup> − 2</div>
+            <div class="formula">Direcciones necesarias = Hosts + 2 ≤ 2<sup>n</sup></div>
+            <div class="result">Equipo A y B: 5 + 2 = 7 ≤ 2³ = 8 → 8 − 2 = 6 hosts útiles</div>
+            <div class="result">Marcador: 2 + 2 = 4 ≤ 2² = 4 → 4 − 2 = 2 hosts útiles</div>
+          </div>
+          
+          <div class="calc-block">
+            <b>Retardos (Latencia)</b>
+            <div class="formula">R<sub>tran</sub> = L / R &nbsp;(L: bits del paquete, R: ancho de banda del enlace en bps)</div>
+            <div class="formula">R<sub>prop</sub> = d / s &nbsp;(d: distancia en m, s: velocidad de propagación en m/s)</div>
+            <div class="formula">Datos: R = 1,000,000 bps, d = 10 m, s = 3 × 10<sup>8</sup> m/s</div>
+            <div class="result" id="calc-tran">R_tran: envía un paquete para calcular</div>
+            <div class="result" id="calc-prop">R_prop: envía un paquete para calcular</div>
+          </div>
+
+          <div class="calc-block">
+            <b>Capacidad de Canal y Ruido</b>
+            <div class="formula">Nyquist (sin ruido): C = 2 · B · log<sub>2</sub>(N) &nbsp;(bps)</div>
+            <div class="result">C = 2 · 500,000 · log₂(2) = 1,000,000 bps</div>
+            <div class="formula">Shannon (con ruido): C = B · log<sub>2</sub>(1 + SNR) &nbsp;(bps)</div>
+            <div class="formula">Datos: B = 500,000 Hz, N = 2 niveles, SNR = (1 − ruido) / ruido</div>
+            <div class="result" id="calc-shan">SNR = ∞ (sin ruido: aplica Nyquist)</div>
+          </div>
+
+          <div class="calc-block">
+            <b>Encabezado TCP</b>
+            <div class="tcp-header">
+              <div class="tcp-row">
+                <div class="tcp-cell w16">Puerto Origen</div>
+                <div class="tcp-cell w16">Puerto Destino</div>
+              </div>
+              <div class="tcp-row">
+                <div class="tcp-cell w32">Número de Secuencia</div>
+              </div>
+              <div class="tcp-row">
+                <div class="tcp-cell w32">Número de Confirmación de Recepción</div>
+              </div>
+              <div class="tcp-row">
+                <div class="tcp-cell w-len">Longitud encabezado TCP</div>
+                <div class="tcp-cell w-flags">
+                  <div class="tcp-flags">
+                    <span class="flag" id="flag-CWR">CWR</span>
+                    <span class="flag" id="flag-ECE">ECE</span>
+                    <span class="flag" id="flag-URG">URG</span>
+                    <span class="flag" id="flag-ACK">ACK</span>
+                    <span class="flag" id="flag-PSH">PSH</span>
+                    <span class="flag" id="flag-RST">RST</span>
+                    <span class="flag" id="flag-SYN">SYN</span>
+                    <span class="flag" id="flag-FIN">FIN</span>
+                  </div>
+                </div>
+                <div class="tcp-cell w-win">Tamaño ventana</div>
+              </div>
+              <div class="tcp-row">
+                <div class="tcp-cell w16">Suma de Verificación</div>
+                <div class="tcp-cell w16">Apuntador Urgente</div>
+              </div>
+              <div class="tcp-row">
+                <div class="tcp-cell w32">Datos | Opcional</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="checksum-section">
+        <h3>Checksum</h3>
+        <div class="formula">Se suman los bloques con acarreo circular (end-around carry), el complemento a 1 de la suma es el Checksum, y en el receptor Suma + Checksum = 1111 significa válido.</div>
+        <div class="result" id="calc-chk">Envía un paquete para ver el cálculo paso a paso.</div>
+      </div>
+
+    </div>
+
+    <div class="vlsm-section">
+      <h3>Tablas de Direccionamiento VLSM</h3>
+
+      <h4>1. Cálculo VLSM por red</h4>
+      <div class="table-wrap">
+        <table class="vlsm">
+          <tr><th>Red</th><th>Hosts</th><th>Hosts + 2</th><th>2<sup>n</sup></th><th>n</th><th>Máscara</th></tr>
+          <tr><td>Equipo A</td><td>5</td><td>7</td><td>8</td><td>3</td><td>/29 (255.255.255.248)</td></tr>
+          <tr><td>Equipo B</td><td>5</td><td>7</td><td>8</td><td>3</td><td>/29 (255.255.255.248)</td></tr>
+          <tr><td>Marcador</td><td>2</td><td>4</td><td>4</td><td>2</td><td>/30 (255.255.255.252)</td></tr>
+        </table>
+      </div>
+
+      <h4>2. Rangos de red</h4>
+      <div class="table-wrap">
+        <table class="vlsm">
+          <tr><th>Red</th><th>Nombre de red</th><th>Primer host</th><th>Último host</th><th>Broadcast</th></tr>
+          <tr><td>Equipo A</td><td>192.168.1.0</td><td>192.168.1.1</td><td>192.168.1.6</td><td>192.168.1.7</td></tr>
+          <tr><td>Equipo B</td><td>192.168.1.8</td><td>192.168.1.9</td><td>192.168.1.14</td><td>192.168.1.15</td></tr>
+          <tr><td>Marcador</td><td>192.168.1.16</td><td>192.168.1.17</td><td>192.168.1.18</td><td>192.168.1.19</td></tr>
+        </table>
+      </div>
+
+      <h4>3. Asignación por dispositivo</h4>
+      <div class="table-wrap">
+        <table class="vlsm">
+          <tr><th>Dispositivo</th><th>IP</th><th>Máscara</th><th>Gateway</th><th>MAC</th></tr>
+          <tr><td>Control A1</td><td>192.168.1.1</td><td>255.255.255.248</td><td>N/A</td><td>AA:BB:CC:00:00:11</td></tr>
+          <tr><td>Control A2</td><td>192.168.1.2</td><td>255.255.255.248</td><td>N/A</td><td>AA:BB:CC:00:00:12</td></tr>
+          <tr><td>Robot A1</td><td>192.168.1.3</td><td>255.255.255.248</td><td>192.168.1.6</td><td>AA:BB:CC:00:00:01</td></tr>
+          <tr><td>Robot A2</td><td>192.168.1.4</td><td>255.255.255.248</td><td>192.168.1.6</td><td>AA:BB:CC:00:00:02</td></tr>
+          <tr><td>Control B1</td><td>192.168.1.9</td><td>255.255.255.248</td><td>N/A</td><td>AA:BB:CC:00:00:21</td></tr>
+          <tr><td>Control B2</td><td>192.168.1.10</td><td>255.255.255.248</td><td>N/A</td><td>AA:BB:CC:00:00:22</td></tr>
+          <tr><td>Robot B1</td><td>192.168.1.11</td><td>255.255.255.248</td><td>192.168.1.14</td><td>AA:BB:CC:00:00:03</td></tr>
+          <tr><td>Robot B2</td><td>192.168.1.12</td><td>255.255.255.248</td><td>192.168.1.14</td><td>AA:BB:CC:00:00:04</td></tr>
+          <tr><td>Marcador</td><td>192.168.1.18</td><td>255.255.255.252</td><td>192.168.1.17</td><td>AA:BB:CC:00:00:99</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3: Simulación en Cisco Packet Tracer -->
+  <section class="section-card" id="simulacion">
+    <h2>3. Simulación en Cisco Packet Tracer</h2>
+    <div class="embed-container video-container">
+      <!-- REEMPLAZA EL SRC CON TU VIDEO -->
+      <video controls>
+        <source src="assets/video.mp4" type="video/mp4">
+        Tu navegador no soporta video.
+      </video>
+    </div>
+
+    <div class="nota-explicativa">
+      <h3>Nota sobre la topología en Cisco Packet Tracer</h3>
+      <p>
+        En Cisco Packet Tracer se utilizó un Router 2911 conectado a dos Access Points (<strong>AP_EquipoA</strong> y <strong>AP_EquipoB</strong>) para representar las interfaces inalámbricas de cada subred VLSM (/29 y /30), dado que el router simula el enrutamiento entre las subredes y los APs proveen el medio inalámbrico para los dispositivos (robots y controles). En el modelo conceptual, esto se simplifica como un router inalámbrico único.
+      </p>
+    </div>
+
+    <div class="vlsm-section">
+      <h3>Configuraciones aplicadas en Cisco Packet Tracer</h3>
+      <div class="table-wrap">
+        <table class="vlsm">
+          <tr><th>Dispositivo</th><th>Interfaz / SSID</th><th>Dirección IPv4</th><th>Máscara de Subred</th><th>Default Gateway</th></tr>
+          <tr><td>Router 2911</td><td>GigabitEthernet0/0 (Lado A)</td><td>192.168.1.6</td><td>255.255.255.248</td><td>N/A</td></tr>
+          <tr><td>Router 2911</td><td>GigabitEthernet0/1 (Lado B)</td><td>192.168.1.14</td><td>255.255.255.248</td><td>N/A</td></tr>
+          <tr><td>Router 2911</td><td>GigabitEthernet0/2 (Lado Marcador)</td><td>192.168.1.17</td><td>255.255.255.252</td><td>N/A</td></tr>
+          <tr><td>Control A1</td><td>SSID: AP_EquipoA (Wireless)</td><td>192.168.1.1</td><td>255.255.255.248</td><td>192.168.1.6</td></tr>
+          <tr><td>Control A2</td><td>SSID: AP_EquipoA (Wireless)</td><td>192.168.1.2</td><td>255.255.255.248</td><td>192.168.1.6</td></tr>
+          <tr><td>Robot A1</td><td>SSID: AP_EquipoA (Wireless)</td><td>192.168.1.3</td><td>255.255.255.248</td><td>192.168.1.6</td></tr>
+          <tr><td>Robot A2</td><td>SSID: AP_EquipoA (Wireless)</td><td>192.168.1.4</td><td>255.255.255.248</td><td>192.168.1.6</td></tr>
+          <tr><td>Control B1</td><td>SSID: AP_EquipoB (Wireless)</td><td>192.168.1.9</td><td>255.255.255.248</td><td>192.168.1.14</td></tr>
+          <tr><td>Control B2</td><td>SSID: AP_EquipoB (Wireless)</td><td>192.168.1.10</td><td>255.255.255.248</td><td>192.168.1.14</td></tr>
+          <tr><td>Robot B1</td><td>SSID: AP_EquipoB (Wireless)</td><td>192.168.1.11</td><td>255.255.255.248</td><td>192.168.1.14</td></tr>
+          <tr><td>Robot B2</td><td>SSID: AP_EquipoB (Wireless)</td><td>192.168.1.12</td><td>255.255.255.248</td><td>192.168.1.14</td></tr>
+          <tr><td>Marcador</td><td>Física (Cable a Router)</td><td>192.168.1.18</td><td>255.255.255.252</td><td>192.168.1.17</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script src="js/app.js"></script>
+</body>
+</html>
